@@ -24,6 +24,7 @@
         }
         .law-order-top, .law-order-bottom {
             cursor: pointer;
+            white-space: pre-wrap; /* Added this line */
         }
         .law-order-top {
             text-shadow:
@@ -156,16 +157,16 @@
             const savedBottomText = localStorage.getItem('bottomText');
 
             if (savedTopText !== null) {
-                topText.textContent = savedTopText;
+                topText.innerHTML = savedTopText;
             }
             if (savedBottomText !== null) {
-                bottomText.textContent = savedBottomText;
+                bottomText.innerHTML = savedBottomText;
             }
         };
 
         function saveTexts() {
-            localStorage.setItem('topText', topText.textContent);
-            localStorage.setItem('bottomText', bottomText.textContent);
+            localStorage.setItem('topText', topText.innerHTML);
+            localStorage.setItem('bottomText', bottomText.innerHTML);
         }
 
         topText.addEventListener('input', saveTexts);
