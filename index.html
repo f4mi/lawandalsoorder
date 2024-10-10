@@ -67,15 +67,20 @@
     </style>
 </head>
 <body>
-    <div class="law-order-container">
-        <div class="law-order-top" contenteditable="true" spellcheck="false">LAW</div>
+    <div class="law-order-container" id="captureArea">
+        <div class="law-order-top" contenteditable="true" spellcheck="false" id="topText">LAW</div>
         <span class="ampersand">&</span>
-        <div class="law-order-bottom" contenteditable="true" spellcheck="false">ALSO ORDER</div>
+        <div class="law-order-bottom" contenteditable="true" spellcheck="false" id="bottomText">ALSO ORDER</div>
     </div>
+
     <div class="upload-container" id="uploadContainer">
         <p id="legalText">Made by f4mi.com - For legal reasons, I can't actually ship this distributing the real accurate font used in the title card of the show, but if you already have it (Friz Quadrata), you can click here to load it locally. If the font is already installed on your machine, you should not be seeing this text.</p>
         <input type="file" id="fontUpload" accept=".ttf,.otf" style="display:none">
     </div>
+
+    <!-- Include html2canvas library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
     <script>
         function isFontAvailable(fontName) {
             const testString = 'abcdefghijklmnopqrstuvwxyz0123456789';
@@ -98,9 +103,19 @@
         }
 
         const fontName = 'Friz Quadrata';
+        const uploadedFontDataUrl = localStorage.getItem('uploadedFontDataUrl');
 
         if (isFontAvailable(fontName)) {
             document.getElementById('uploadContainer').style.display = 'none';
+        } else if (uploadedFontDataUrl) {
+            const font = new FontFace(fontName, `url(${uploadedFontDataUrl})`);
+            font.load().then(loadedFont => {
+                document.fonts.add(loadedFont);
+                document.body.style.fontFamily = `"${fontName}", serif`;
+                document.getElementById('uploadContainer').style.display = 'none';
+            }).catch(error => {
+                console.error('Failed to load font from localStorage:', error);
+            });
         } else {
             document.getElementById('fontUpload').onchange = e => {
                 const file = e.target.files[0];
@@ -108,6 +123,12 @@
                     const reader = new FileReader();
                     reader.onload = e => {
                         const fontDataUrl = e.target.result;
+                        try {
+                            localStorage.setItem('uploadedFontDataUrl', fontDataUrl);
+                        } catch (err) {
+                            console.error('Failed to store font in localStorage:', err);
+                        }
+
                         const font = new FontFace(fontName, `url(${fontDataUrl})`);
                         font.load().then(loadedFont => {
                             document.fonts.add(loadedFont);
@@ -125,6 +146,66 @@
                 document.getElementById('fontUpload').click();
             };
         }
+
+
+        const topText = document.getElementById('topText');
+        const bottomText = document.getElementById('bottomText');
+
+        window.onload = function() {
+            const savedTopText = localStorage.getItem('topText');
+            const savedBottomText = localStorage.getItem('bottomText');
+
+            if (savedTopText !== null) {
+                topText.textContent = savedTopText;
+            }
+            if (savedBottomText !== null) {
+                bottomText.textContent = savedBottomText;
+            }
+        };
+
+        function saveTexts() {
+            localStorage.setItem('topText', topText.textContent);
+            localStorage.setItem('bottomText', bottomText.textContent);
+        }
+
+        topText.addEventListener('input', saveTexts);
+        bottomText.addEventListener('input', saveTexts);
+
+        function takeScreenshot() {
+            const captureArea = document.getElementById('captureArea');
+
+            const originalTransform = captureArea.style.transform;
+            const originalTransformOrigin = captureArea.style.transformOrigin;
+
+
+            const scaleFactor = 2;
+            captureArea.style.transform = `scale(${scaleFactor})`;
+            captureArea.style.transformOrigin = 'top left';
+
+            html2canvas(captureArea, {
+                backgroundColor: null, 
+                scale: 1,
+                useCORS: true,
+            }).then(canvas => {
+                captureArea.style.transform = originalTransform;
+                captureArea.style.transformOrigin = originalTransformOrigin;
+
+                const link = document.createElement('a');
+                link.download = 'screenshot.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }).catch(err => {
+                console.error('Screenshot capture failed:', err);
+                captureArea.style.transform = originalTransform;
+                captureArea.style.transformOrigin = originalTransformOrigin;
+            });
+        }
+        document.addEventListener('keydown', function(event) {
+            if (event.code === 'ControlRight') {
+                event.preventDefault();
+                takeScreenshot();
+            }
+        });
     </script>
 </body>
 </html>
