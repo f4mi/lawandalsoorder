@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Law but also Order</title>
+    <style>
+        body {
+            background: black;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: serif;
+        }
+        .law-order-container {
+            text-align: center;
+            font-size: 80px;
+            color: white;
+            font-weight: bold;
+        }
+        .law-order-top, .law-order-bottom {
+            cursor: pointer;
+        }
+        .law-order-top {
+            text-shadow: -5px 5px 2px rgba(0,0,0,.6), 0 0 10px rgba(0,0,255,.8), 0 0 30px rgba(255,255,255,.8);
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        .law-order-bottom {
+            text-shadow: -5px 5px 2px rgba(0,0,0,.6), 0 0 10px rgba(255,0,0,.8), 0 0 30px rgba(255,255,255,.8);
+            margin-top: -15px;
+            display: block;
+        }
+        .ampersand {
+            text-shadow: -5px 5px 2px rgba(0,0,0,.6), 0 0 20px rgba(255,255,255,1);
+        }
+        .upload-container {
+            text-align: center;
+            color: white;
+            position: absolute;
+            bottom: 10px;
+            font-family: sans-serif;
+        }
+        #legalText {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="law-order-container">
+        <div class="law-order-top" contenteditable="true" spellcheck="false">LAW</div>
+        <span class="ampersand">&</span>
+        <div class="law-order-bottom" contenteditable="true" spellcheck="false">ALSO ORDER</div>
+    </div>
+    <div class="upload-container" id="uploadContainer">
+        <p id="legalText">For legal reasons, I can't actually ship this distributing the real accurate font used in the title card of the show, but if you already have it (it's Friz Quadrata), you can click here to load it locally.</p>
+        <input type="file" id="fontUpload" accept=".ttf,.otf" style="display:none">
+    </div>
+    <script>
+        document.getElementById('fontUpload').onchange = e => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const font = new FontFace('Friz Quadrata', `url(${e.target.result})`);
+                    font.load().then(loadedFont => {
+                        document.fonts.add(loadedFont);
+                        document.body.style.fontFamily = 'Friz Quadrata, serif';
+                        document.getElementById('uploadContainer').style.display = 'none';
+                    }).catch(console.error);
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+        document.getElementById('legalText').onclick = () => {
+            document.getElementById('fontUpload').click();
+        };
+    </script>
+</body>
+</html>
