@@ -24,17 +24,32 @@
             cursor: pointer;
         }
         .law-order-top {
-            text-shadow: -5px 5px 2px rgba(0,0,0,.6), 0 0 10px rgba(0,0,255,.8), 0 0 30px rgba(255,255,255,.8);
+            text-shadow:
+                -5px 5px 2px rgba(0,0,0,.6),
+                0 0 10px rgba(0,0,255,1),
+                0 0 20px rgba(0,0,255,.8),
+                0 0 30px rgba(0,0,255,.6),
+                0 0 40px rgba(0,0,255,.4);
             display: inline-block;
             margin-bottom: 10px;
         }
         .law-order-bottom {
-            text-shadow: -5px 5px 2px rgba(0,0,0,.6), 0 0 10px rgba(255,0,0,.8), 0 0 30px rgba(255,255,255,.8);
+            text-shadow:
+                -5px 5px 2px rgba(0,0,0,.6),
+                0 0 10px rgba(255,0,0,1),
+                0 0 20px rgba(255,0,0,.8),
+                0 0 30px rgba(255,0,0,.6),
+                0 0 40px rgba(255,0,0,.4);
             margin-top: -15px;
             display: block;
         }
         .ampersand {
-            text-shadow: -5px 5px 2px rgba(0,0,0,.6), 0 0 20px rgba(255,255,255,1);
+            text-shadow:
+                -5px 5px 2px rgba(0,0,0,.6),
+                0 0 10px rgba(0,0,255,1),
+                0 0 20px rgba(0,0,255,.8),
+                0 0 30px rgba(0,0,255,.6),
+                0 0 40px rgba(0,0,255,.4);
         }
         .upload-container {
             text-align: center;
@@ -55,7 +70,7 @@
         <div class="law-order-bottom" contenteditable="true" spellcheck="false">ALSO ORDER</div>
     </div>
     <div class="upload-container" id="uploadContainer">
-        <p id="legalText">For legal reasons, I can't actually ship this distributing the real accurate font used in the title card of the show, but if you already have it (it's Friz Quadrata), you can click here to load it locally.</p>
+        <p id="legalText">For legal reasons, I can't actually ship this distributing the real accurate font used in the title card of the show, but if you already have it (Friz Quadrata), you can click here to load it locally.</p>
         <input type="file" id="fontUpload" accept=".ttf,.otf" style="display:none">
     </div>
     <script>
