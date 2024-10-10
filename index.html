@@ -27,7 +27,7 @@
         }
         .law-order-top {
             text-shadow:
-                -6px 0px 5px rgba(0,0,0,1),
+                -6.3px -0.55125px 2px rgba(0,0,0,1),
                 0 0 10px rgba(0,0,255,1),
                 0 0 20px rgba(0,0,255,0.8),
                 0 0 30px rgba(0,0,255,0.6),
@@ -37,7 +37,7 @@
         }
         .law-order-bottom {
             text-shadow:
-                -6px 0px 5px rgba(0,0,0,1),
+                -6.3px -0.55125px 2px rgba(0,0,0,1),
                 0 0 10px rgba(255,0,0,1),
                 0 0 20px rgba(255,0,0,0.8),
                 0 0 30px rgba(255,0,0,0.6),
@@ -47,7 +47,7 @@
         }
         .ampersand {
             text-shadow:
-                -6px 0px 5px rgba(0,0,0,1),
+                -6.3px -0.55125px 2px rgba(0,0,0,1),
                 0 0 10px rgba(0,0,255,1),
                 0 0 20px rgba(0,0,255,0.8),
                 0 0 30px rgba(0,0,255,0.6),
@@ -72,25 +72,40 @@
         <div class="law-order-bottom" contenteditable="true" spellcheck="false">ALSO ORDER</div>
     </div>
     <div class="upload-container" id="uploadContainer">
-        <p id="legalText">Made by f4mi.com - For legal reasons, I can't actually ship this distributing the real accurate font used in the title card of the show, but if you already have it (Friz Quadrata), you can click here to load it locally.</p>
+        <p id="legalText">For legal reasons, I can't actually ship this distributing the real accurate font used in the title card of the show, but if you already have it (Friz Quadrata), you can click here to load it locally.</p>
         <input type="file" id="fontUpload" accept=".ttf,.otf" style="display:none">
     </div>
     <script>
+        function loadFontFromData(fontData) {
+            const font = new FontFace('Friz Quadrata', fontData);
+            font.load().then(loadedFont => {
+                document.fonts.add(loadedFont);
+                document.body.style.fontFamily = '"Friz Quadrata", serif';
+                document.getElementById('uploadContainer').style.display = 'none';
+            }).catch(error => {
+                console.error('Failed to load font:', error);
+                localStorage.removeItem('frizQuadrataFont');
+            });
+        }
+
+        const storedFontData = localStorage.getItem('frizQuadrataFont');
+        if (storedFontData) {
+            loadFontFromData(storedFontData);
+        }
+
         document.getElementById('fontUpload').onchange = e => {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = e => {
-                    const font = new FontFace('Friz Quadrata', `url(${e.target.result})`);
-                    font.load().then(loadedFont => {
-                        document.fonts.add(loadedFont);
-                        document.body.style.fontFamily = 'Friz Quadrata, serif';
-                        document.getElementById('uploadContainer').style.display = 'none';
-                    }).catch(console.error);
+                    const fontDataUrl = e.target.result;
+                    localStorage.setItem('frizQuadrataFont', `url(${fontDataUrl})`);
+                    loadFontFromData(`url(${fontDataUrl})`);
                 };
                 reader.readAsDataURL(file);
             }
         };
+
         document.getElementById('legalText').onclick = () => {
             document.getElementById('fontUpload').click();
         };
