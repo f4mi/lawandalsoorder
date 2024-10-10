@@ -62,6 +62,7 @@
         }
         #legalText {
             cursor: pointer;
+            /* Removed text-decoration */
         }
     </style>
 </head>
@@ -84,10 +85,12 @@
                 document.getElementById('uploadContainer').style.display = 'none';
             }).catch(error => {
                 console.error('Failed to load font:', error);
+                // Remove invalid font data from localStorage
                 localStorage.removeItem('frizQuadrataFont');
             });
         }
 
+        // Check if font data is stored in localStorage
         const storedFontData = localStorage.getItem('frizQuadrataFont');
         if (storedFontData) {
             loadFontFromData(storedFontData);
@@ -99,6 +102,7 @@
                 const reader = new FileReader();
                 reader.onload = e => {
                     const fontDataUrl = e.target.result;
+                    // Store font data in localStorage
                     localStorage.setItem('frizQuadrataFont', `url(${fontDataUrl})`);
                     loadFontFromData(`url(${fontDataUrl})`);
                 };
